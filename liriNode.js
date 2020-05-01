@@ -10,7 +10,7 @@ var input = process.argv[3];
 
 switch (process.argv[2]) {
   case "concert-this":
-    // concertSearch
+    concertSearch()
     console.log("concert-this");
     break;
   case "spotify-this-song":
@@ -18,14 +18,22 @@ switch (process.argv[2]) {
     console.log("spotify-this-song");
     break;
   case "movie-this":
-    // movieSearch
+    // movieSearch()
     console.log("movie-this");
     break;
   case "do-what-it-says":
-    //  itSaysSearch
+    //  itSaysSearch()
     console.log("do-what-it-says");
     break;
 }
+
+function concertSearch(){
+axios.get("https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp").then(function(response){
+  console.log(response.data[0].venue.name)
+  console.log(response.data[0].venue.city)
+  console.log(response.data[0].venue.country)
+  console.log(moment(response.data[0].datetime).format("MM/D/YYYY"))
+})}
 
 function spotifySearch() {
   var spotify = new nodeSpotifyAPI(keys.spotify);
@@ -72,4 +80,14 @@ function spotifySearch() {
     .catch(function (err) {
       console.log(err);
     });
+}
+
+function movieSearch(){
+ 
+    axios.get("https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp").then(function(response){
+      console.log(response.data[0].venue.name)
+      console.log(response.data[0].venue.city)
+      console.log(response.data[0].venue.country)
+      console.log(moment(response.data[0].datetime).format("MM/D/YYYY"))
+    })
 }
