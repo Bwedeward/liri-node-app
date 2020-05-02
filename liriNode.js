@@ -5,6 +5,7 @@ var axios = require("axios");
 var nodeSpotifyAPI = require("node-spotify-api");
 var moment = require("moment");
 var dotenv = require("dotenv");
+var omdb = require("omdb")
 
 var input = process.argv[3];
 
@@ -18,7 +19,7 @@ switch (process.argv[2]) {
     console.log("spotify-this-song");
     break;
   case "movie-this":
-    // movieSearch()
+    movieSearch()
     console.log("movie-this");
     break;
   case "do-what-it-says":
@@ -42,9 +43,7 @@ function spotifySearch() {
     input = "The Sign";
     isDefault = true;
   }
-
-  spotify
-    .search({ type: "track", query: input })
+  spotify.search({ type: "track", query: input })
     .then(function (response) {
       var items = response.tracks.items;
         // console.log(items);
@@ -64,17 +63,22 @@ function spotifySearch() {
         console.log(defaultSong.album.name);
         console.log(previewUrl);
       } else {
-        //   console.log(response.tracks.album.name)
+        //   var items = response.tracks.items;
         //loop through itmes array and log out info
-        var inputSong = items.find((item) => {
-            return item.artists[0].name
-        })
-        console.log(inputSong)
-        // console.log(defaultSong);
-        // console.log(defaultSong.artists[0].name);
-        // console.log(items.name);
-        // console.log(defaultSong.album.name);
-        // console.log(previewUrl);
+        // var inputSong = items.find((item) => {
+        //     return item.artists[0].name
+        // })
+        var previewUrl = inputSong.preview_url;
+        if (!previewUrl) {
+          previewUrl = inputSong.external_url.spotify;
+        }
+        console.log(items[0].artists[0].name)
+        console.log(items[0].name)
+        console.log(intems[0].album.name)
+        // console.log(inputSong.artists[0].name)
+        // console.log(inputSong.name);
+        // console.log(inputSong.album.name);
+        console.log(previewUrl);
       }
     })
     .catch(function (err) {
@@ -82,12 +86,36 @@ function spotifySearch() {
     });
 }
 
-function movieSearch(){
- 
-    axios.get("https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp").then(function(response){
-      console.log(response.data[0].venue.name)
-      console.log(response.data[0].venue.city)
-      console.log(response.data[0].venue.country)
-      console.log(moment(response.data[0].datetime).format("MM/D/YYYY"))
-    })
+
+function movieSearch() {
+  isDefault = false
+  if (input === undefined){
+    input = "Mr. Nobody"
+    isDefault = true;
+  }
+  axios
+  .get(
+  `http://www.omdbapi.com/?apikey=trilogy&t=${input}`
+  )
+  .then(function(response) {
+    if (isDefault){
+      console.log(`${response.data.Title}`);
+      console.log(`${response.data.Year}`)
+      console.log(`${response.data.Rated}`)
+      console.log(`${response.data.Ratings[1].Value}`)
+      console.log(`${response.data.Country}`)
+      console.log(`${response.data.Language}`)
+      console.log(`${response.data.Plot}`)
+      console.log(`${response.data.Actors}`) 
+    }else {
+      console.log(`${response.data.Title}`);
+      console.log(`${response.data.Year}`)
+      console.log(`${response.data.Rated}`)
+      console.log(`${response.data.Ratings[1].Value}`)
+      console.log(`${response.data.Country}`)
+      console.log(`${response.data.Language}`)
+      console.log(`${response.data.Plot}`)
+      console.log(`${response.data.Actors}`)
+    }
+  });
 }
