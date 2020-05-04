@@ -6,10 +6,13 @@ var nodeSpotifyAPI = require("node-spotify-api");
 var moment = require("moment");
 var dotenv = require("dotenv");
 var omdb = require("omdb")
+var fs = require("fs-extra")
 
+var doSomething = process.argv[2]
 var input = process.argv[3];
 
-switch (process.argv[2]) {
+function runIt(){
+switch (doSomething) {
   case "concert-this":
     concertSearch()
     console.log("concert-this");
@@ -23,10 +26,21 @@ switch (process.argv[2]) {
     console.log("movie-this");
     break;
   case "do-what-it-says":
-    //  itSaysSearch()
     console.log("do-what-it-says");
+    fs.readFile("random.txt", "utf8", function(err, data) {
+      if (err) {
+        return console.log(err);
+      } else {
+      var random = data.split(",");
+      doSomething = random[0]
+      input = random[1]
+      console.log(doSomething, input)
+      runIt()
+    }});
     break;
-}
+}}
+
+runIt()
 
 function concertSearch(){
 axios.get("https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp").then(function(response){
@@ -68,13 +82,13 @@ function spotifySearch() {
         // var inputSong = items.find((item) => {
         //     return item.artists[0].name
         // })
-        var previewUrl = inputSong.preview_url;
-        if (!previewUrl) {
-          previewUrl = inputSong.external_url.spotify;
-        }
+        // var previewUrl = inputSong.preview_url;
+        // if (!previewUrl) {
+        //   previewUrl = inputSong.external_url.spotify;
+        // }
         console.log(items[0].artists[0].name)
         console.log(items[0].name)
-        console.log(intems[0].album.name)
+        console.log(items[0].album.name)
         // console.log(inputSong.artists[0].name)
         // console.log(inputSong.name);
         // console.log(inputSong.album.name);
